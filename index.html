@@ -10,22 +10,34 @@
 
 <p>i make content im cool i play roblox and stuff its kinda epic i think maybe idk</p>
 
-<br>
-<br>
+<br><br>
 
 <a href="https://www.youtube.com/@TEEHEET">CLICK THIS</a>
 
-<br>
-<br>
-<br>
+<br><br><br>
 
-<button onclick="document.getElementById('bgm').play()">
+<button onclick="playMusic()">
 click if music doesnt start
 </button>
 
-<audio id="bgm" autoplay loop>
+<audio id="bgm" loop>
   <source src="bgm.mp3" type="audio/mpeg">
 </audio>
+
+<script>
+const bgm = document.getElementById("bgm");
+
+function playMusic() {
+  bgm.play();
+}
+
+// Try to autoplay when page loads
+window.addEventListener("load", () => {
+  bgm.play().catch(() => {
+    console.log("Autoplay blocked by browser.");
+  });
+});
+</script>
 
 </body>
 </html>
