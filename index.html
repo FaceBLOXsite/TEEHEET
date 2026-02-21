@@ -1,1 +1,84 @@
-<html> hi <html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>teeheet.me</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(120deg, #ff4d4d, #ff9900, #ffee00, #33cc33, #3399ff, #9933ff);
+    background-size: 300% 300%;
+    animation: gradientShift 12s ease infinite;
+    color: white;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    background: rgba(0, 0, 0, 0.45);
+    padding: 60px 40px;
+    border-radius: 20px;
+    max-width: 700px;
+}
+
+h1 {
+    font-size: 40px;
+    margin-bottom: 25px;
+}
+
+p {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.button {
+    display: inline-block;
+    margin-top: 35px;
+    padding: 14px 35px;
+    background: white;
+    color: black;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 30px;
+    transition: 0.2s ease;
+}
+
+.button:hover {
+    transform: scale(1.05);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>teeheet.me</h1>
+    <p>
+        Channel Description? Uhh.. I Dont Really Know How To Describe This Channel,
+        So Check Out A Bunch Of My Videos To Know What Im All About!
+    </p>
+
+    <a class="button" href="https://www.youtube.com/@TEEHEET" target="_blank">
+        @TEEHEET
+    </a>
+</div>
+
+</body>
+</html>
