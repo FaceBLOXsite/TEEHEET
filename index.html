@@ -18,8 +18,13 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: blur(10px); /* start blurred */
-      transition: filter 0.5s ease; /* smooth unblur */
+      filter: blur(10px);
+      transition: filter 1s ease, transform 1s ease;
+      position: fixed; /* cover entire viewport */
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none; /* prevent interaction */
     }
 
     #start-text {
@@ -29,17 +34,19 @@
       transform: translate(-50%, -50%);
       color: white;
       font-family: sans-serif;
-      font-size: 32px;
+      font-size: 36px;
       text-align: center;
       opacity: 1;
-      transition: opacity 0.5s ease;
-      pointer-events: none; /* allows clicks to pass through text */
+      transition: opacity 1s ease;
+      z-index: 1;
+      pointer-events: none;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
     }
   </style>
 </head>
 <body>
   <div id="start-text">Click anywhere to start</div>
-  <video id="mlgVideo" loop>
+  <video id="mlgVideo" loop muted>
     <source src="mlg.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
@@ -49,23 +56,22 @@
     const startText = document.getElementById('start-text');
 
     document.body.addEventListener('click', () => {
-      // Remove blur
-      video.style.filter = 'blur(0px)';
-      
-      // Fade out text
+      // Fade out text and remove blur
       startText.style.opacity = '0';
+      video.style.filter = 'blur(0px)';
 
-      // Request fullscreen
-      if (video.requestFullscreen) {
-        video.requestFullscreen();
-      } else if (video.webkitRequestFullscreen) {
-        video.webkitRequestFullscreen();
-      } else if (video.msRequestFullscreen) {
-        video.msRequestFullscreen();
-      }
+      // Optional cinematic zoom-in effect
+      video.style.transform = 'scale(1.05)';
 
       // Play video with sound
+      video.muted = false; // enable sound
       video.play();
+
+      // Disable any interactions that could stop or skip
+      video.controls = false;
+      video.addEventListener('contextmenu', e => e.preventDefault());
+      video.addEventListener('pause', () => video.play());
+      video.addEventListener('seeking', () => video.currentTime = 0);
     }, { once: true });
   </script>
 </body>
