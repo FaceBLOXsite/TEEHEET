@@ -1,78 +1,165 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>teeheet.me</title>
+  <title>TEEHEET - F2P Casino</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      background: black;
-      cursor: pointer;
-    }
-
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: blur(10px);
-      transition: filter 1s ease, transform 1s ease;
-      position: fixed; /* cover entire viewport */
-      top: 0;
-      left: 0;
-      z-index: 0;
-      pointer-events: none; /* prevent interaction */
-    }
-
-    #start-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e1e2f, #111);
       color: white;
-      font-family: sans-serif;
-      font-size: 36px;
       text-align: center;
-      opacity: 1;
-      transition: opacity 1s ease;
-      z-index: 1;
-      pointer-events: none;
-      text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: gold;
+      font-size: 40px;
+      margin-bottom: 5px;
+    }
+
+    .coins {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .game-box {
+      background: #2b2b45;
+      padding: 20px;
+      margin: 20px auto;
+      width: 320px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    }
+
+    button {
+      padding: 8px 15px;
+      margin: 8px;
+      cursor: pointer;
+      border-radius: 6px;
+      border: none;
+      background: gold;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: orange;
+    }
+
+    input {
+      padding: 6px;
+      width: 60px;
+      text-align: center;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      opacity: 0.6;
     }
   </style>
 </head>
 <body>
-  <div id="start-text">Click anywhere to start</div>
-  <video id="mlgVideo" loop muted>
-    <source src="mlg.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
 
-  <script>
-    const video = document.getElementById('mlgVideo');
-    const startText = document.getElementById('start-text');
+<h1>🎰 TEEHEET 🎲</h1>
+<div class="coins">Coins: <span id="coins">0</span></div>
 
-    document.body.addEventListener('click', () => {
-      // Fade out text and remove blur
-      startText.style.opacity = '0';
-      video.style.filter = 'blur(0px)';
+<div class="game-box">
+  <h3>Slot Machine</h3>
+  <p id="slots">🍒 🍋 🍊</p>
+  <button onclick="playSlots()">Spin (50 coins)</button>
+</div>
 
-      // Optional cinematic zoom-in effect
-      video.style.transform = 'scale(1.05)';
+<div class="game-box">
+  <h3>Dice Game</h3>
+  <p>Pick a number (1–6)</p>
+  <input type="number" id="diceChoice" min="1" max="6">
+  <br>
+  <button onclick="playDice()">Bet 50 coins</button>
+  <p id="diceResult"></p>
+</div>
 
-      // Play video with sound
-      video.muted = false; // enable sound
-      video.play();
+<button onclick="resetGame()">Reset Game</button>
 
-      // Disable any interactions that could stop or skip
-      video.controls = false;
-      video.addEventListener('contextmenu', e => e.preventDefault());
-      video.addEventListener('pause', () => video.play());
-      video.addEventListener('seeking', () => video.currentTime = 0);
-    }, { once: true });
-  </script>
+<div class="footer">
+  TEEHEET © F2P Simulator – No real money involved
+</div>
+
+<script>
+let coins = localStorage.getItem("teeheetCoins")
+  ? parseInt(localStorage.getItem("teeheetCoins"))
+  : 1000;
+
+updateDisplay();
+
+function updateDisplay() {
+  document.getElementById("coins").textContent = coins;
+  localStorage.setItem("teeheetCoins", coins);
+}
+
+function playSlots() {
+  if (coins < 50) {
+    alert("Not enough coins!");
+    return;
+  }
+
+  coins -= 50;
+
+  const symbols = ["🍒", "🍋", "🍊", "⭐", "💎"];
+  let result = [
+    symbols[Math.floor(Math.random()*symbols.length)],
+    symbols[Math.floor(Math.random()*symbols.length)],
+    symbols[Math.floor(Math.random()*symbols.length)]
+  ];
+
+  document.getElementById("slots").textContent = result.join(" ");
+
+  if (result[0] === result[1] && result[1] === result[2]) {
+    coins += 300;
+    alert("🎉 JACKPOT! +300 coins!");
+  }
+
+  updateDisplay();
+}
+
+function playDice() {
+  if (coins < 50) {
+    alert("Not enough coins!");
+    return;
+  }
+
+  let choice = parseInt(document.getElementById("diceChoice").value);
+
+  if (!choice || choice < 1 || choice > 6) {
+    alert("Pick a number between 1 and 6!");
+    return;
+  }
+
+  coins -= 50;
+
+  let roll = Math.floor(Math.random() * 6) + 1;
+
+  if (choice === roll) {
+    coins += 300;
+    document.getElementById("diceResult").textContent =
+      "🎲 Rolled " + roll + " — YOU WIN +300!";
+  } else {
+    document.getElementById("diceResult").textContent =
+      "🎲 Rolled " + roll + " — You lost.";
+  }
+
+  updateDisplay();
+}
+
+function resetGame() {
+  if (confirm("Reset all progress?")) {
+    coins = 1000;
+    updateDisplay();
+  }
+}
+</script>
+
 </body>
 </html>
