@@ -1,194 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Robux Trading Simulator</title>
-<style>
-body { font-family: Arial, sans-serif; background: #0f172a; color: #e2e8f0; text-align: center; }
-.container { max-width: 1100px; margin: auto; }
-.item { background: #1e293b; padding: 10px; margin: 10px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; gap:10px; }
-button { padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; }
-.buy { background: #22c55e; }
-.sell { background: #ef4444; }
-input { padding: 5px; border-radius: 5px; border: none; margin: 5px; }
-.panel { background:#1e293b; padding:10px; border-radius:10px; margin:10px; }
-.userRow { display:flex; align-items:center; justify-content:center; gap:10px; }
-.avatar { width:60px; height:60px; border-radius:50%; background:#111; }
-.small { font-size: 12px; color:#94a3b8; }
-</style>
+  <meta charset="UTF-8">
+  <title>TEEHEET Demon List</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f0f0f;
+      color: white;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 30px;
+      font-size: 40px;
+    }
+
+    table {
+      margin: 40px auto;
+      border-collapse: collapse;
+      width: 70%;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 12px;
+    }
+
+    th {
+      background: #1a1a1a;
+    }
+
+    tr:hover {
+      background: #1f1f1f;
+    }
+
+    a {
+      color: #4da6ff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <h1>💰 Robux Trading Simulator</h1>
 
-  <div class="panel">
-    <div class="userRow">
-      <img id="avatar" class="avatar" src="" alt="avatar">
-      <div>
-        <div>Username: <input id="usernameInput" placeholder="Enter Roblox username"></div>
-        <button onclick="saveUsername()">Save</button>
-        <h2 id="username"></h2>
-      </div>
-    </div>
-  </div>
+  <h1>TEEHEET Demon List</h1>
 
-  <h2 id="balance"></h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Level</th>
+        <th>Verified by</th>
+        <th>Verification</th>
+      </tr>
+    </thead>
 
-  <div class="panel">
-    <h3>Friends</h3>
-    <input id="friendInput" placeholder="Add friend">
-    <button onclick="addFriend()">Send Request</button>
-    <ul id="friendsList"></ul>
-  </div>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Thinking Space II</td>
+        <td>Zoink</td>
+        <td>
+          <a href="https://www.youtube.com/watch?v=CELNmHwln_c" target="_blank">
+            Watch
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-  <div id="items"></div>
-</div>
-
-<script>
-let balance = Number(localStorage.getItem("balance")) || 1000000000;
-let owned = JSON.parse(localStorage.getItem("owned")) || {};
-let friends = JSON.parse(localStorage.getItem("friends")) || [];
-let username = localStorage.getItem("username") || "Guest";
-
-const container = document.getElementById("items");
-
-function saveData() {
-  localStorage.setItem("balance", balance);
-  localStorage.setItem("owned", JSON.stringify(owned));
-  localStorage.setItem("friends", JSON.stringify(friends));
-}
-
-function updateUI() {
-  document.getElementById("balance").innerText = `Balance: ${balance.toLocaleString()} R$`;
-  document.getElementById("username").innerText = `User: ${username}`;
-
-  const list = document.getElementById("friendsList");
-  list.innerHTML = "";
-  friends.forEach(f => {
-    const li = document.createElement("li");
-    li.innerText = f;
-    list.appendChild(li);
-  });
-}
-
-async function loadAvatar(name) {
-  try {
-    // Get userId from username
-    const res = await fetch(`https://users.roblox.com/v1/usernames/users`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ usernames: [name] })
-    });
-    const data = await res.json();
-    if (!data.data || !data.data[0]) return;
-
-    const userId = data.data[0].id;
-
-    // Get avatar headshot
-    const thumb = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png`);
-    const tData = await thumb.json();
-
-    const img = tData.data[0].imageUrl;
-    document.getElementById("avatar").src = img;
-    localStorage.setItem("avatar", img);
-  } catch (e) {
-    console.log("Avatar load failed", e);
-  }
-}
-
-function saveUsername() {
-  username = document.getElementById("usernameInput").value || "Guest";
-  localStorage.setItem("username", username);
-  loadAvatar(username);
-  updateUI();
-}
-
-function addFriend() {
-  const name = document.getElementById("friendInput").value;
-  if (name && !friends.includes(name)) {
-    friends.push(name);
-    saveData();
-    updateUI();
-  }
-}
-
-async function loadItems() {
-  const res = await fetch("https://www.rolimons.com/itemapi/itemdetails");
-  const data = await res.json();
-
-  const items = Object.entries(data.items)
-    .sort((a,b) => (b[1][3]||b[1][2]) - (a[1][3]||a[1][2]))
-    .slice(0, 100);
-
-  container.innerHTML = "";
-
-  items.forEach(([id, item]) => {
-    const name = item[0];
-    const rap = item[2];
-    const value = item[3];
-
-    const price = value > 0 ? value : rap;
-    if (!price) return;
-
-    owned[id] = owned[id] || 0;
-
-    const div = document.createElement("div");
-    div.className = "item";
-
-    const img = document.createElement("img");
-    img.src = `https://thumbnails.roblox.com/v1/assets?assetIds=${id}&size=110x110&format=Png`;
-    img.style.width = "50px";
-
-    const info = document.createElement("div");
-    info.innerHTML = `
-      <div>${name} (${owned[id]})</div>
-      <div class="small">RAP: ${rap?.toLocaleString() || 0} | Value: ${value?.toLocaleString() || 0}</div>
-      <div class="small">Price Used: ${price.toLocaleString()} R$</div>
-    `;
-
-    const buyBtn = document.createElement("button");
-    buyBtn.innerText = "Buy";
-    buyBtn.className = "buy";
-
-    const sellBtn = document.createElement("button");
-    sellBtn.innerText = "Sell";
-    sellBtn.className = "sell";
-
-    buyBtn.onclick = () => {
-      if (balance >= price) {
-        balance -= price;
-        owned[id]++;
-        saveData();
-        updateUI();
-        loadItems();
-      }
-    };
-
-    sellBtn.onclick = () => {
-      if (owned[id] > 0) {
-        balance += price;
-        owned[id]--;
-        saveData();
-        updateUI();
-        loadItems();
-      }
-    };
-
-    div.appendChild(img);
-    div.appendChild(info);
-    div.appendChild(buyBtn);
-    div.appendChild(sellBtn);
-
-    container.appendChild(div);
-  });
-}
-
-// Load saved avatar if exists
-const savedAvatar = localStorage.getItem("avatar");
-if (savedAvatar) document.getElementById("avatar").src = savedAvatar;
-
-updateUI();
-loadItems();
-</script>
 </body>
 </html>
