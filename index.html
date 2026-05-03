@@ -57,15 +57,34 @@
     .verifier {
       font-size: 14px;
       color: #bbb;
-      margin-top: 5px;
+      margin-bottom: 15px;
     }
 
-    iframe {
+    .thumbnail {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .thumbnail img {
       width: 100%;
-      height: 420px;
+      max-width: 600px;
       border-radius: 8px;
-      border: none;
-      margin-top: 15px;
+      transition: 0.2s;
+    }
+
+    .thumbnail:hover img {
+      opacity: 0.8;
+    }
+
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 50px;
+      color: #ffd900;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -77,17 +96,17 @@
 
   <div class="container">
 
-    <!-- LEVEL 1 -->
     <div class="level-card">
 
       <div class="rank">#1</div>
       <div class="level-name">Thinking Space II</div>
       <div class="verifier">Verified by: Zoink</div>
 
-      <iframe 
-        src="https://www.youtube.com/embed/CELNmHwln_c"
-        allowfullscreen>
-      </iframe>
+      <!-- CLICKABLE IMAGE -->
+      <a href="https://youtu.be/CELNmHwln_c" target="_blank" class="thumbnail">
+        <img src="TSII.jpeg" alt="Thinking Space II">
+        <div class="play-button">▶</div>
+      </a>
 
     </div>
 
