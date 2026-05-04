@@ -1,116 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>TEEHEET Demon List</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: #0a0a0a;
-      color: #f5f5f5;
-    }
-
-    header {
-      background: #111;
-      padding: 20px;
-      text-align: center;
-      border-bottom: 2px solid #ffd900;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 36px;
-      letter-spacing: 2px;
-      color: #ffd900;
-    }
-
-    .container {
-      width: 80%;
-      max-width: 1000px;
-      margin: 40px auto;
-    }
-
-    .level-card {
-      background: #121212;
-      border: 1px solid #2a2a2a;
-      border-left: 5px solid #ffd900;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 0 15px rgba(255, 217, 0, 0.1);
-    }
-
-    .rank {
-      font-size: 26px;
-      font-weight: bold;
-      color: #ffd900;
-    }
-
-    .level-name {
-      font-size: 24px;
-      font-weight: bold;
-      margin-top: 5px;
-    }
-
-    .verifier {
-      font-size: 14px;
-      color: #bbb;
-      margin-bottom: 15px;
-    }
-
-    .thumbnail {
-      position: relative;
-      display: inline-block;
-      cursor: pointer;
-    }
-
-    .thumbnail img {
-      width: 100%;
-      max-width: 600px;
-      border-radius: 8px;
-      transition: 0.2s;
-    }
-
-    .thumbnail:hover img {
-      opacity: 0.8;
-    }
-
-    .play-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 50px;
-      color: #ffd900;
-      pointer-events: none;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Luau Scripting Trainer</title>
+<style>
+body { font-family: Arial, sans-serif; background:#0f172a; color:white; margin:0; }
+.container { display:flex; height:100vh; }
+.sidebar { width:260px; background:#111827; padding:15px; overflow-y:auto; }
+button { width:100%; margin:5px 0; padding:10px; border:none; cursor:pointer; background:#1f2937; color:white; border-radius:6px; }
+button:hover { background:#374151; }
+.main { flex:1; padding:20px; overflow-y:auto; }
+.card { background:#1f2937; padding:15px; border-radius:10px; }
+.option { margin:5px 0; padding:8px; background:#374151; cursor:pointer; border-radius:5px; }
+.option:hover { background:#4b5563; }
+.codebox { background:#0b1220; padding:10px; border-radius:8px; margin-top:10px; font-family:monospace; }
+.block { padding:10px; margin:5px 0; background:#374151; border-radius:6px; cursor:pointer; }
+.builder { display:flex; gap:10px; }
+.panel { flex:1; }
+.output { background:#0b1220; padding:10px; border-radius:8px; min-height:120px; font-family:monospace; }
+</style>
 </head>
 <body>
 
-  <header>
-    <h1>TEEHEET Demon List</h1>
-  </header>
+<div class="container">
 
-  <div class="container">
+<div class="sidebar">
+<h2>Learning Path</h2>
+<button onclick="loadLesson('noob')">Noob Start</button>
+<button onclick="loadLesson('coins')">Coin System</button>
+<button onclick="loadLesson('shop')">Shop System</button>
+<button onclick="loadLesson('builder')">BUILD SCRIPT MODE</button>
+</div>
 
-    <div class="level-card">
+<div class="main">
+<div class="card" id="content">
+<h2>Welcome</h2>
+<p>Go from NOOB → FULL GAME DEV → BUILD SCRIPTS YOURSELF</p>
+</div>
+</div>
 
-      <div class="rank">#1</div>
-      <div class="level-name">Thinking Space II</div>
-      <div class="verifier">Verified by: Zoink</div>
+</div>
 
-      <!-- CLICKABLE IMAGE -->
-      <a href="https://youtu.be/CELNmHwln_c" target="_blank" class="thumbnail">
-        <img src="TSII.jpeg" alt="Thinking Space II">
-        <div class="play-button">▶</div>
-      </a>
+<script>
+const lessons = {
+  noob:{
+    title:"Noob Start",
+    text:"Learn how games think using variables and logic.",
+    code:"coins = 10",
+    question:{q:"What is scripting?",a:["Game logic","Internet","Graphics","Music"],correct:0}
+  },
+  coins:{
+    title:"Coin System",
+    text:"Touch coin → detect player → add coins → destroy coin",
+    code:"Coins = Coins + 1",
+    question:{q:"Why add coins?",a:["Progress","Break game","Nothing","UI"],correct:0}
+  },
+  shop:{
+    title:"Shop System",
+    text:"Check item + coins >= cost → give or deny",
+    code:"if coins >= 5 then buy end",
+    question:{q:"First step?",a:["Check player choice","Delete map","Random","Sound"],correct:0}
+  },
+  builder:{
+    title:"Script Builder Mode",
+    text:"Build scripts by clicking blocks in order. This is how real logic is formed.",
+    custom:true
+  }
+};
 
-    </div>
+let builtScript = [];
 
-  </div>
+function loadLesson(key){
+  const l = lessons[key];
+
+  if(l.custom){
+    document.getElementById('content').innerHTML = `
+      <h2>${l.title}</h2>
+      <p>${l.text}</p>
+
+      <div class='builder'>
+        <div class='panel'>
+          <h3>Blocks</h3>
+          <div class='block' onclick="addBlock('if player touches coin')">if player touches coin</div>
+          <div class='block' onclick="addBlock('check if player')">check if player</div>
+          <div class='block' onclick="addBlock('add +1 coin')">add +1 coin</div>
+          <div class='block' onclick="addBlock('remove coin')">remove coin</div>
+          <div class='block' onclick="clearScript()">CLEAR</div>
+        </div>
+
+        <div class='panel'>
+          <h3>Your Script</h3>
+          <div class='output' id='output'></div>
+          <button onclick='testScript()'>TEST SCRIPT</button>
+        </div>
+      </div>
+    `;
+    renderScript();
+    return;
+  }
+
+  let html = `<h2>${l.title}</h2><p>${l.text}</p>`;
+  if(l.code) html += `<div class='codebox'>${l.code}</div>`;
+  html += `<h3>${l.question.q}</h3>`;
+  l.question.a.forEach((opt,i)=>{
+    html += `<div class='option' onclick='checkAnswer(${i},"${key}")'>${opt}</div>`;
+  });
+
+  document.getElementById('content').innerHTML = html;
+}
+
+function addBlock(text){
+  builtScript.push(text);
+  renderScript();
+}
+
+function clearScript(){
+  builtScript = [];
+  renderScript();
+}
+
+function renderScript(){
+  const out = document.getElementById('output');
+  if(!out) return;
+  out.innerHTML = builtScript.map(b=>"- "+b).join("<br>");
+}
+
+function testScript(){
+  const correct = ["if player touches coin","check if player","add +1 coin","remove coin"];
+  const match = JSON.stringify(builtScript) === JSON.stringify(correct);
+  alert(match ? "Script works ✔ Coin system complete" : "Not correct order yet ❌ Try again");
+}
+
+function checkAnswer(i,key){
+  const l = lessons[key];
+  alert(i===l.question.correct?"Correct ✔":"Wrong ❌");
+}
+</script>
 
 </body>
 </html>
